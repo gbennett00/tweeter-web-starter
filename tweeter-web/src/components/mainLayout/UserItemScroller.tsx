@@ -28,7 +28,7 @@ const UserItemScroller = (props: Props) => {
     if(changedDisplayedUser) {
       loadMoreItems();
     }
-  }, [changedDisplayedUser]);
+  }, []);
 
   // Add new items whenever there are new items to add
   useEffect(() => {
