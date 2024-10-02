@@ -64,33 +64,21 @@ export class LoginPresenter {
     }
   }
 
-  public submitButtonStatus(): boolean {
+  private submitButtonStatus(): boolean {
     return !this._alias || !this._password;
   }
 
-  public get alias() {
-    return this._alias;
-  }
-
-  public set alias(value: string) {
+  set alias(value: string) {
     this._alias = value;
     this._view.updateSubmitButtonStatus(this.submitButtonStatus());
   }
 
-  public get password() {
-    return this._password;
-  }
-
-  public set password(value: string) {
+  set password(value: string) {
     this._password = value;
     this._view.updateSubmitButtonStatus(this.submitButtonStatus());
   }
 
-  public get rememberMe() {
-    return this._rememberMe;
-  }
-
-  public set rememberMe(value: boolean) {
+  set rememberMe(value: boolean) {
     this._rememberMe = value;
   }
 }
