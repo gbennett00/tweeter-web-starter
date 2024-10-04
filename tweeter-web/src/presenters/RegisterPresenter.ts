@@ -45,6 +45,17 @@ export class RegisterPresenter {
     this.updateUserInfo = updateUserInfo;
   }
 
+  registerOnEnter(event: React.KeyboardEvent<HTMLElement>) {
+    if (event.key === "Enter" && !this.getSubmitButtonStatus()) {
+      this.doRegister();
+    }
+  }
+
+  handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    this.handleImageFile(file);
+  }
+
   async doRegister() {
     try {
       this.view.setLoadingState(true);
@@ -106,14 +117,20 @@ export class RegisterPresenter {
     return file.name.split(".").pop();
   };
 
-  private updateSubmitButtonStatus() {
-    this.view.updateSubmitButtonStatus(
+  private getSubmitButtonStatus(): boolean {
+    return (
       !this._firstName ||
       !this._lastName ||
       !this._alias ||
       !this._password ||
       !this._imageUrl ||
       !this._imageFileExtension
+    );
+  }
+
+  private updateSubmitButtonStatus() {
+    this.view.updateSubmitButtonStatus(
+      this.getSubmitButtonStatus()
     );
   }
 
