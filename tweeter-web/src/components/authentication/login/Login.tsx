@@ -31,17 +31,11 @@ const Login = (props: Props) => {
     () => new LoginPresenter(view, navigate, updateUserInfo, props.originalUrl)
   );
 
-  const loginOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && !submitButtonStatus) {
-      presenter.doLogin();
-    }
-  };
-
   const inputFieldGenerator = () => {
     return (
       <>
         <AuthenticationFields
-          authenticateOnEnter={loginOnEnter}
+          authenticateOnEnter={(event) => presenter.loginOnEnter(event)}
           setAlias={(event) => (presenter.alias = event.toString())}
           setPassword={(event) => (presenter.password = event.toString())}
         />

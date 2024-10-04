@@ -5,6 +5,7 @@ export interface UserInfoView {
   setIsFollower: (isFollower: boolean) => void;
   setFolloweeCount: (count: number) => void;
   setFollowerCount: (count: number) => void;
+  setDisplayedUser: (user: User) => void;
   setIsLoading: (isLoading: boolean) => void;
   displayInfoMessage: (message: string, duration: number) => void;
   displayErrorMessage: (message: string) => void;
@@ -18,6 +19,11 @@ export class UserInfoPresenter {
   constructor(view: UserInfoView) {
     this.view = view;
   }
+
+  public switchToLoggedInUser(event: React.MouseEvent, currentUser: User): void {
+    event.preventDefault();
+    this.view.setDisplayedUser(currentUser!);
+  };
 
   async setIsFollowerStatus(
     authToken: AuthToken,
@@ -65,7 +71,8 @@ export class UserInfoPresenter {
     }
   };
 
-  async followDisplayedUser(authToken: AuthToken, displayedUser: User) {
+  async followDisplayedUser(event: React.MouseEvent, authToken: AuthToken, displayedUser: User) {
+    event.preventDefault();
     try {
       this.view.setIsLoading(true);
       this.view.displayInfoMessage(`Following ${displayedUser!.name}...`, 0);
@@ -88,7 +95,8 @@ export class UserInfoPresenter {
     }
   }
 
-  async unfollowDisplayedUser(authToken: AuthToken, displayedUser: User) {
+  async unfollowDisplayedUser(event: React.MouseEvent, authToken: AuthToken, displayedUser: User) {
+    event.preventDefault();
     try {
       this.view.setIsLoading(true);
       this.view.displayInfoMessage(

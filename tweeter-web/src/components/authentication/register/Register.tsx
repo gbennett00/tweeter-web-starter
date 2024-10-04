@@ -1,6 +1,6 @@
 import "./Register.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
@@ -15,17 +15,6 @@ const Register = () => {
   const navigate = useNavigate();
   const { updateUserInfo } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
-
-  const registerOnEnter = (event: React.KeyboardEvent<HTMLElement>) => {
-    if (event.key == "Enter" && !submitButtonStatus) {
-      presenter.doRegister();
-    }
-  };
-
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    presenter.handleImageFile(file);
-  };
 
   const listener: RegisterView = {
     updateSubmitButtonStatus: (status: boolean) =>
@@ -48,7 +37,7 @@ const Register = () => {
             size={50}
             id="firstNameInput"
             placeholder="First Name"
-            onKeyDown={registerOnEnter}
+            onKeyDown={(event) => presenter.registerOnEnter(event)}
             onChange={(event) => presenter.firstName = event.target.value}
           />
           <label htmlFor="firstNameInput">First Name</label>
@@ -60,13 +49,13 @@ const Register = () => {
             size={50}
             id="lastNameInput"
             placeholder="Last Name"
-            onKeyDown={registerOnEnter}
+            onKeyDown={(event) => presenter.registerOnEnter(event)}
             onChange={(event) => presenter.lastName = event.target.value}
           />
           <label htmlFor="lastNameInput">Last Name</label>
         </div>
         <AuthenticationFields 
-            authenticateOnEnter={registerOnEnter} 
+            authenticateOnEnter={(event) => presenter.registerOnEnter(event)} 
             setAlias={(event) => (presenter.alias = event.toString())} 
             setPassword={(event) => (presenter.password = event.toString())} />
         <div className="form-floating mb-3">
@@ -74,8 +63,8 @@ const Register = () => {
             type="file"
             className="d-inline-block py-5 px-4 form-control bottom"
             id="imageFileInput"
-            onKeyDown={registerOnEnter}
-            onChange={handleFileChange}
+            onKeyDown={(event) => presenter.registerOnEnter(event)}
+            onChange={(event) => presenter.handleFileChange(event)}
           />
           <label htmlFor="imageFileInput">User Image</label>
           <img src={presenter.imageUrl} className="img-thumbnail" alt=""></img>

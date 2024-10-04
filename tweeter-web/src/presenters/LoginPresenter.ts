@@ -42,6 +42,12 @@ export class LoginPresenter {
     this.originalUrl = originalUrl;
   }
 
+  loginOnEnter(event: React.KeyboardEvent<HTMLElement>) {
+    if (event.key === "Enter" && !this.getSubmitButtonStatus()) {
+      this.doLogin();
+    }
+  }
+
   async doLogin() {
     try {
       this._view.setLoadingState(true);
@@ -64,18 +70,18 @@ export class LoginPresenter {
     }
   }
 
-  private submitButtonStatus(): boolean {
+  private getSubmitButtonStatus(): boolean {
     return !this._alias || !this._password;
   }
 
   set alias(value: string) {
     this._alias = value;
-    this._view.updateSubmitButtonStatus(this.submitButtonStatus());
+    this._view.updateSubmitButtonStatus(this.getSubmitButtonStatus());
   }
 
   set password(value: string) {
     this._password = value;
-    this._view.updateSubmitButtonStatus(this.submitButtonStatus());
+    this._view.updateSubmitButtonStatus(this.getSubmitButtonStatus());
   }
 
   set rememberMe(value: boolean) {
