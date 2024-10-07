@@ -8,6 +8,7 @@ export interface UserItemView {
 export abstract class UserItemPresenter {
   private _hasMoreItems = true;
   private _lastItem: User | null = null;
+  private _firstPageLoaded = false;
 
   private _view: UserItemView;
 
@@ -35,9 +36,18 @@ export abstract class UserItemPresenter {
     this._lastItem = value;
   }
 
+  protected set firstPageLoaded(value: boolean) {
+    this._firstPageLoaded = value;
+  }
+
+  public get firstPageLoaded() {
+    return this._firstPageLoaded;
+  }
+
   reset() {
     this._lastItem = null;
     this._hasMoreItems = true;
+    this._firstPageLoaded = false;
   }
 
   public abstract loadMoreItems(authToken: AuthToken, userAlias: string): void;

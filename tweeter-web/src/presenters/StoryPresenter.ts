@@ -14,6 +14,7 @@ export class StoryPresenter extends StatusItemPresenter {
 
   
   public async loadMoreItems(authToken: AuthToken, userAlias: string) {
+    this.firstPageLoaded = true;
     try {
       const [newItems, hasMore] = await this.statusService.loadMoreStoryItems(
         authToken,

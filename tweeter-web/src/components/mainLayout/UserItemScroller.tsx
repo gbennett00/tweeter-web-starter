@@ -25,10 +25,18 @@ const UserItemScroller = (props: Props) => {
 
   // Load initial items whenever the displayed user changes. Done in a separate useEffect hook so the changes from reset will be visible.
   useEffect(() => {
-    if(changedDisplayedUser) {
-      loadMoreItems();
+    const initialize = async () => {
+      // to avoid a race condition with the InfiniteScroll component loading more items
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      if (!presenter.firstPageLoaded) {
+        loadMoreItems();
+      }
     }
-  }, []);
+
+    if(changedDisplayedUser) {
+      initialize();
+    }
+  }, [changedDisplayedUser]);
 
   // Add new items whenever there are new items to add
   useEffect(() => {
