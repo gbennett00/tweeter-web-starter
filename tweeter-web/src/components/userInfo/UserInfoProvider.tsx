@@ -1,8 +1,9 @@
 import { Context, createContext, useState } from "react";
 import { User, AuthToken } from "tweeter-shared";
-
-const CURRENT_USER_KEY: string = "CurrentUserKey";
-const AUTH_TOKEN_KEY: string = "AuthTokenKey";
+import {
+  UserInfoProviderPresenter,
+  UserInfoProviderView,
+} from "../../presenters/UserInfoProviderPresenter";
 
 interface UserInfo {
   currentUser: User | null;
@@ -18,7 +19,7 @@ interface UserInfo {
   setDisplayedUser: (user: User) => void;
 }
 
-const defaultUserInfo: UserInfo = {
+export const defaultUserInfo: UserInfo = {
   currentUser: null,
   displayedUser: null,
   authToken: null,
@@ -40,82 +41,31 @@ interface Props {
 }
 
 const UserInfoProvider: React.FC<Props> = ({ children }) => {
-  const saveToLocalStorage = (
-    currentUser: User,
-    authToken: AuthToken
-  ): void => {
-    localStorage.setItem(CURRENT_USER_KEY, currentUser.toJson());
-    localStorage.setItem(AUTH_TOKEN_KEY, authToken.toJson());
-  };
-
-  const retrieveFromLocalStorage = (): {
-    currentUser: User | null;
-    displayedUser: User | null;
-    authToken: AuthToken | null;
-  } => {
-    const loggedInUser = User.fromJson(localStorage.getItem(CURRENT_USER_KEY));
-    const authToken = AuthToken.fromJson(localStorage.getItem(AUTH_TOKEN_KEY));
-
-    if (!!loggedInUser && !!authToken) {
-      return {
-        currentUser: loggedInUser,
-        displayedUser: loggedInUser,
-        authToken: authToken,
-      };
-    } else {
-      return { currentUser: null, displayedUser: null, authToken: null };
-    }
-  };
-
-  const clearLocalStorage = (): void => {
-    localStorage.removeItem(CURRENT_USER_KEY);
-    localStorage.removeItem(AUTH_TOKEN_KEY);
-  };
-
   const [userInfo, setUserInfo] = useState({
     ...defaultUserInfo,
-    ...retrieveFromLocalStorage(),
+    ...UserInfoProviderPresenter.retrieveFromLocalStorage(),
   });
 
-  const updateUserInfo = (
-    currentUser: User,
-    displayedUser: User | null,
-    authToken: AuthToken,
-    remember: boolean
-  ) => {
-    setUserInfo({
-      ...userInfo,
-      currentUser: currentUser,
-      displayedUser: displayedUser,
-      authToken: authToken,
-    });
-
-    if (remember) {
-      saveToLocalStorage(currentUser, authToken);
-    }
+  const listener: UserInfoProviderView = {
+    updateUserInfo: (newInfo) =>
+      setUserInfo((prevInfo) => ({ ...prevInfo, ...newInfo })),
   };
 
-  const clearUserInfo = () => {
-    setUserInfo({
-      ...userInfo,
-      currentUser: null,
-      displayedUser: null,
-      authToken: null,
-    });
-    clearLocalStorage();
-  };
-
-  const setDisplayedUser = (user: User) => {
-    setUserInfo({ ...userInfo, displayedUser: user });
-  };
+  const [presenter] = useState(new UserInfoProviderPresenter(listener));
 
   return (
     <UserInfoContext.Provider
       value={{
         ...userInfo,
-        updateUserInfo: updateUserInfo,
-        clearUserInfo: clearUserInfo,
-        setDisplayedUser: setDisplayedUser,
+        updateUserInfo: (currentUser, displayedUser, authToken, remember) =>
+          presenter.updateUserInfo(
+            currentUser,
+            displayedUser,
+            authToken,
+            remember
+          ),
+        clearUserInfo: () => presenter.clearUserInfo(),
+        setDisplayedUser: (user) => presenter.setDisplayedUser(user),
       }}
     >
       {children}
