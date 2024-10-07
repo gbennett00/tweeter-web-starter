@@ -1,12 +1,9 @@
 import { Context, createContext, useState } from "react";
+import { Toast } from "./Toast";
 import {
-  Toast,
-  Type,
-  makeErrorToast,
-  makeInfoToast,
-  makeSuccessToast,
-  makeWarningToast,
-} from "./Toast";
+  ToastProviderPresenter,
+  ToastProviderView,
+} from "../../presenters/ToastProviderPresenter";
 
 interface ToastInfo {
   toastList: Toast[];
@@ -72,51 +69,18 @@ interface Props {
 const ToastProvider: React.FC<Props> = ({ children }) => {
   const [toastInfo, setToastInfo] = useState(defaultToastInfo);
 
+  const listener: ToastProviderView = {
+    displayToast: (toast: Toast) => displayToast(toast),
+    deleteToast: (id: string) => deleteToast(id),
+  };
+
+  const [presenter] = useState(() => new ToastProviderPresenter(listener));
+
   const displayToast = (toast: Toast) => {
     const { toastList } = toastInfo;
     toastList.push(toast);
 
     setToastInfo({ ...toastInfo, ...toastList });
-  };
-
-  const displaySuccessToast = (
-    message: string,
-    duration: number,
-    bootstrapClasses: string = ""
-  ): string => {
-    const toast = makeSuccessToast(message, duration, bootstrapClasses);
-    displayToast(toast);
-    return toast.id;
-  };
-
-  const displayErrorToast = (
-    message: string,
-    duration: number,
-    bootstrapClasses: string = ""
-  ): string => {
-    const toast = makeErrorToast(message, duration, bootstrapClasses);
-    displayToast(toast);
-    return toast.id;
-  };
-
-  const displayInfoToast = (
-    message: string,
-    duration: number,
-    bootstrapClasses: string = ""
-  ): string => {
-    const toast = makeInfoToast(message, duration, bootstrapClasses);
-    displayToast(toast);
-    return toast.id;
-  };
-
-  const displayWarningToast = (
-    message: string,
-    duration: number,
-    bootstrapClasses: string = ""
-  ): string => {
-    const toast = makeWarningToast(message, duration, bootstrapClasses);
-    displayToast(toast);
-    return toast.id;
   };
 
   const deleteToast = (id: string) => {
@@ -131,90 +95,37 @@ const ToastProvider: React.FC<Props> = ({ children }) => {
     setToastInfo({ ...toastInfo, ...{ toastList: [] } });
   };
 
-  const deleteAllSuccessToasts = () => {
-    deleteAllToastsOfType(Type.Success);
-  };
-
-  const deleteAllErrorToasts = () => {
-    deleteAllToastsOfType(Type.Error);
-  };
-
-  const deleteAllInfoToasts = () => {
-    deleteAllToastsOfType(Type.Info);
-  };
-
-  const deleteAllWarningToasts = () => {
-    deleteAllToastsOfType(Type.Warning);
-  };
-
-  const deleteAllToastsOfType = (type: Type) => {
-    for (let toast of toastInfo.toastList) {
-      if (toast.type === type) {
-        deleteToast(toast.id);
-      }
-    }
-  };
-
-  const deleteLastToast = () => {
-    const { toastList } = toastInfo;
-
-    if (!!toastList && toastList.length > 0) {
-      deleteToast(toastList[toastList.length - 1].id);
-    }
-  };
-
-  const deleteLastSuccessToast = () => {
-    deleteLastTypedToast(Type.Success);
-  };
-
-  const deleteLastErrorToast = () => {
-    deleteLastTypedToast(Type.Error);
-  };
-
-  const deleteLastInfoToast = () => {
-    deleteLastTypedToast(Type.Info);
-  };
-
-  const deleteLastWarningToast = () => {
-    deleteLastTypedToast(Type.Warning);
-  };
-
-  const deleteLastTypedToast = (type: Type) => {
-    const { toastList } = toastInfo;
-
-    if (!!toastList && toastList.length > 0) {
-      let index = toastList.length - 1;
-
-      do {
-        if (toastList[index].type === type) {
-          deleteToast(toastList[index].id);
-          break;
-        }
-
-        index--;
-      } while (index >= 0);
-    }
-  };
-
   return (
     <ToastInfoContext.Provider
       value={{
         ...toastInfo,
-        displaySuccessToast: displaySuccessToast,
-        displayErrorToast: displayErrorToast,
-        displayInfoToast: displayInfoToast,
-        displayWarningToast: displayWarningToast,
+        displaySuccessToast: (message, duration, bootstrapClasses) =>
+          presenter.displaySuccessToast(message, duration, bootstrapClasses),
+        displayErrorToast: (message, duration, bootstrapClasses) =>
+          presenter.displayErrorToast(message, duration, bootstrapClasses),
+        displayInfoToast: (message, duration, bootstrapClasses) =>
+          presenter.displayInfoToast(message, duration, bootstrapClasses),
+        displayWarningToast: (message, duration, bootstrapClasses) =>
+          presenter.displayWarningToast(message, duration, bootstrapClasses),
         deleteToast: deleteToast,
         deleteAllToasts: deleteAllToasts,
-        deleteAllSuccessToasts: deleteAllSuccessToasts,
-        deleteAllErrorToasts: deleteAllErrorToasts,
-        deleteAllInfoToasts: deleteAllInfoToasts,
-        deleteAllWarningToasts: deleteAllWarningToasts,
-        deleteLastToast: deleteLastToast,
-        deleteLastSuccessToast: deleteLastSuccessToast,
-        deleteLastErrorToast: deleteLastErrorToast,
-        deleteLastInfoToast: deleteLastInfoToast,
-        deleteLastWarningToast: deleteLastWarningToast,
+        deleteAllSuccessToasts: () =>
+          presenter.deleteAllSuccessToasts(toastInfo.toastList),
+        deleteAllErrorToasts: () =>
+          presenter.deleteAllErrorToasts(toastInfo.toastList),
+        deleteAllInfoToasts: () =>
+          presenter.deleteAllInfoToasts(toastInfo.toastList),
+        deleteAllWarningToasts: () =>
+          presenter.deleteAllWarningToasts(toastInfo.toastList),
+        deleteLastToast: () => presenter.deleteLastToast(toastInfo.toastList),
+        deleteLastSuccessToast: () =>
+          presenter.deleteLastSuccessToast(toastInfo.toastList),
+        deleteLastErrorToast: () =>
+          presenter.deleteLastErrorToast(toastInfo.toastList),
+        deleteLastInfoToast: () =>
+          presenter.deleteLastInfoToast(toastInfo.toastList),
+        deleteLastWarningToast: () =>
+          presenter.deleteLastWarningToast(toastInfo.toastList),
       }}
     >
       {children}
