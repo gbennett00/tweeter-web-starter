@@ -8,6 +8,7 @@ export class FollowService {
     lastItem: User | null
   ): Promise<[User[], boolean]> {
     // TODO: Replace with the result of calling server
+    console.log("Loading more followers");
     return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
   };
 
@@ -18,6 +19,7 @@ export class FollowService {
     lastItem: User | null
   ): Promise<[User[], boolean]> {
     // TODO: Replace with the result of calling server
+    console.log("Loading more followees");
     return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
   };
 

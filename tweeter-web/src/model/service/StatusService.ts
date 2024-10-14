@@ -8,6 +8,7 @@ export class StatusService {
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
     // TODO: Replace with the result of calling server
+    console.log("Loading more feed items");
     return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
   };
 
@@ -18,6 +19,7 @@ export class StatusService {
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
     // TODO: Replace with the result of calling server
+    console.log("Loading more story items");
     return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
   };
 

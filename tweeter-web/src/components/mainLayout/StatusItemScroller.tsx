@@ -1,13 +1,18 @@
 import { Status } from "tweeter-shared";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import useToastListener from "../toaster/ToastListenerHook";
 import StatusItem from "../statusItem/StatusItem";
 import useUserInfo from "../userInfo/UserInfoHook";
-import { StatusItemPresenter, StatusItemView } from "../../presenters/StatusItemPresenter";
+import {
+  PagedItemPresenter,
+  PagedItemView,
+} from "../../presenters/PagedItemPresenter";
 
 interface Props {
-  presenterGenerator: (view: StatusItemView) => StatusItemPresenter;
+  presenterGenerator: (
+    view: PagedItemView<Status>
+  ) => PagedItemPresenter<Status>;
 }
 
 const StatusItemScroller = (props: Props) => {
@@ -15,7 +20,7 @@ const StatusItemScroller = (props: Props) => {
   const [items, setItems] = useState<Status[]>([]);
   const [newItems, setNewItems] = useState<Status[]>([]);
   const [changedDisplayedUser, setChangedDisplayedUser] = useState(true);
-  
+
   const { displayedUser, authToken } = useUserInfo();
 
   // Initialize the component whenever the displayed user changes
@@ -31,31 +36,31 @@ const StatusItemScroller = (props: Props) => {
       if (!presenter.firstPageLoaded) {
         loadMoreItems();
       }
-    }
+    };
 
-    if(changedDisplayedUser) {
+    if (changedDisplayedUser) {
       initialize();
     }
   }, [changedDisplayedUser]);
 
   // Add new items whenever there are new items to add
   useEffect(() => {
-    if(newItems) {
+    if (newItems) {
       setItems([...items, ...newItems]);
     }
-  }, [newItems])
+  }, [newItems]);
 
   const reset = async () => {
     setItems([]);
     setNewItems([]);
     setChangedDisplayedUser(true);
     presenter.reset();
-  }
+  };
 
-  const listener: StatusItemView = {
+  const listener: PagedItemView<Status> = {
     addItems: (newItems: Status[]) => setNewItems(newItems),
-    displayErrorMessage: displayErrorMessage
-  }
+    displayErrorMessage: displayErrorMessage,
+  };
 
   const [presenter] = useState(props.presenterGenerator(listener));
 

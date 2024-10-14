@@ -4,10 +4,13 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import UserItem from "../userItem/UserItem";
 import useToastListener from "../toaster/ToastListenerHook";
 import useUserInfo from "../userInfo/UserInfoHook";
-import { UserItemPresenter, UserItemView } from "../../presenters/UserItemPresenter";
+import {
+  PagedItemPresenter,
+  PagedItemView,
+} from "../../presenters/PagedItemPresenter";
 
 interface Props {
-  presenterGenerator: (view: UserItemView) => UserItemPresenter;
+  presenterGenerator: (view: PagedItemView<User>) => PagedItemPresenter<User>;
 }
 
 const UserItemScroller = (props: Props) => {
@@ -31,31 +34,31 @@ const UserItemScroller = (props: Props) => {
       if (!presenter.firstPageLoaded) {
         loadMoreItems();
       }
-    }
+    };
 
-    if(changedDisplayedUser) {
+    if (changedDisplayedUser) {
       initialize();
     }
   }, [changedDisplayedUser]);
 
   // Add new items whenever there are new items to add
   useEffect(() => {
-    if(newItems) {
+    if (newItems) {
       setItems([...items, ...newItems]);
     }
-  }, [newItems])
+  }, [newItems]);
 
   const reset = async () => {
     setItems([]);
     setNewItems([]);
     setChangedDisplayedUser(true);
     presenter.reset();
-  }
+  };
 
-  const listener: UserItemView = {
+  const listener: PagedItemView<User> = {
     addItems: (newItems: User[]) => setNewItems(newItems),
-    displayErrorMessage: displayErrorMessage
-  }
+    displayErrorMessage: displayErrorMessage,
+  };
 
   const [presenter] = useState(props.presenterGenerator(listener));
 

@@ -1,54 +1,11 @@
-import { AuthToken, User } from "tweeter-shared";
+import { User } from "tweeter-shared";
+import { FollowService } from "../model/service/FollowService";
+import { PagedItemPresenter } from "./PagedItemPresenter";
 
-export interface UserItemView {
-  addItems: (newItems: User[]) => void;
-  displayErrorMessage: (message: string) => void;
-}
+export abstract class UserItemPresenter extends PagedItemPresenter<User>{
+  private _service: FollowService = new FollowService();
 
-export abstract class UserItemPresenter {
-  private _hasMoreItems = true;
-  private _lastItem: User | null = null;
-  private _firstPageLoaded = false;
-
-  private _view: UserItemView;
-
-  protected constructor(view: UserItemView) {
-    this._view = view;
+  protected get service(): FollowService {
+    return this._service;
   }
-
-  protected get view() {
-    return this._view;
-  }
-
-  public get hasMoreItems() {
-    return this._hasMoreItems;
-  }
-
-  protected set hasMoreItems(value: boolean) {
-    this._hasMoreItems = value;
-  }
-
-  protected get lastItem() {
-    return this._lastItem;
-  }
-
-  protected set lastItem(value: User | null) {
-    this._lastItem = value;
-  }
-
-  protected set firstPageLoaded(value: boolean) {
-    this._firstPageLoaded = value;
-  }
-
-  public get firstPageLoaded() {
-    return this._firstPageLoaded;
-  }
-
-  reset() {
-    this._lastItem = null;
-    this._hasMoreItems = true;
-    this._firstPageLoaded = false;
-  }
-
-  public abstract loadMoreItems(authToken: AuthToken, userAlias: string): void;
 }
