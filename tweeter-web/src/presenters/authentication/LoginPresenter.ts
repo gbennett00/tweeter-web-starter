@@ -1,8 +1,8 @@
 import { NavigateFunction } from "react-router-dom";
-import { User, AuthToken } from "tweeter-shared";
 import {
   AuthenticationPresenter,
   AuthenticationView,
+  UpdateUserInfoFunction,
 } from "./AuthenticationPresenter";
 
 export class LoginPresenter extends AuthenticationPresenter {
@@ -11,12 +11,7 @@ export class LoginPresenter extends AuthenticationPresenter {
   public constructor(
     view: AuthenticationView,
     navigate: NavigateFunction,
-    updateUserInfo: (
-      user: User,
-      displayedUser: User,
-      authToken: AuthToken,
-      rememberMe: boolean
-    ) => void,
+    updateUserInfo: UpdateUserInfoFunction,
     originalUrl?: string
   ) {
     super(view, navigate, updateUserInfo);

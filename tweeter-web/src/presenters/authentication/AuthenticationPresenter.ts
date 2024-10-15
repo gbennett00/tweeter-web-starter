@@ -8,16 +8,18 @@ export interface AuthenticationView extends View {
   setLoadingState: (isLoading: boolean) => void;
 }
 
+export type UpdateUserInfoFunction = (
+  user: User,
+  displayedUser: User,
+  authToken: AuthToken,
+  rememberMe: boolean
+) => void;
+
 export abstract class AuthenticationPresenter extends Presenter<AuthenticationView> {
   private _userService = new UserService();
 
   private _navigate: NavigateFunction;
-  private _updateUserInfo: (
-    user: User,
-    displayedUser: User,
-    authToken: AuthToken,
-    rememberMe: boolean
-  ) => void;
+  private _updateUserInfo: UpdateUserInfoFunction;
   
   private _alias: string = "";
   private _password: string = "";
@@ -26,12 +28,7 @@ export abstract class AuthenticationPresenter extends Presenter<AuthenticationVi
   protected constructor(
     view: AuthenticationView,
     navigate: NavigateFunction,
-    updateUserInfo: (
-      user: User,
-      displayedUser: User,
-      authToken: AuthToken,
-      rememberMe: boolean
-    ) => void
+    updateUserInfo: UpdateUserInfoFunction
   ) {
     super(view);
     this._navigate = navigate;
