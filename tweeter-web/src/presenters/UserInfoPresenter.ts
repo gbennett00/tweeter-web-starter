@@ -69,7 +69,7 @@ export class UserInfoPresenter extends LoadingPresenter<UserInfoView> {
     const infoMessageDescription = isCurrentlyFollower
       ? "Unfollowing"
       : "Following";
-    const operation = isCurrentlyFollower
+    const followOperation = isCurrentlyFollower
       ? (authToken: AuthToken, userToUnfollow: User) =>
           this.followService.unfollow(authToken, userToUnfollow)
       : (authToken: AuthToken, userToFollow: User) =>
@@ -82,7 +82,7 @@ export class UserInfoPresenter extends LoadingPresenter<UserInfoView> {
 
     this.doFailureReportingLoadingOperation(
       async () => {
-        const [followerCount, followeeCount] = await operation(
+        const [followerCount, followeeCount] = await followOperation(
           authToken!,
           displayedUser!
         );
@@ -94,21 +94,5 @@ export class UserInfoPresenter extends LoadingPresenter<UserInfoView> {
       `${infoMessageDescription} ${displayedUser!.name}...`,
       operationDescription
     );
-  }
-
-  async followDisplayedUser(
-    event: React.MouseEvent,
-    authToken: AuthToken,
-    displayedUser: User
-  ) {
-    this.toggleFollowStatus(event, authToken, displayedUser, false);
-  }
-
-  async unfollowDisplayedUser(
-    event: React.MouseEvent,
-    authToken: AuthToken,
-    displayedUser: User
-  ) {
-    this.toggleFollowStatus(event, authToken, displayedUser, true);
   }
 }

@@ -94,10 +94,11 @@ const UserInfo = () => {
                       type="submit"
                       style={{ width: "6em" }}
                       onClick={(event) =>
-                        presenter.unfollowDisplayedUser(
+                        presenter.toggleFollowStatus(
                           event,
                           authToken!,
-                          displayedUser!
+                          displayedUser!,
+                          true
                         )
                       }
                     >
@@ -118,10 +119,11 @@ const UserInfo = () => {
                       type="submit"
                       style={{ width: "6em" }}
                       onClick={(event) =>
-                        presenter.followDisplayedUser(
+                        presenter.toggleFollowStatus(
                           event,
                           authToken!,
-                          displayedUser!
+                          displayedUser!,
+                          false
                         )
                       }
                     >
