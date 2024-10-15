@@ -1,7 +1,7 @@
 import { User, Status, AuthToken } from "tweeter-shared";
 import { Presenter, View } from "../Presenter";
 
-type Item = User | Status;
+export type Item = User | Status;
 
 export interface PagedItemView<T extends Item> extends View {
   addItems: (newItems: T[]) => void;
