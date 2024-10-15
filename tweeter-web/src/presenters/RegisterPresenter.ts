@@ -2,15 +2,14 @@ import { NavigateFunction } from "react-router-dom";
 import { UserService } from "../model/service/UserService";
 import { AuthToken, User } from "tweeter-shared";
 import { Buffer } from "buffer";
+import { Presenter, View } from "./Presenter";
 
-export interface RegisterView {
+export interface RegisterView extends View {
   updateSubmitButtonStatus: (status: boolean) => void;
   setLoadingState: (isLoading: boolean) => void;
-  displayErrorMessage: (message: string) => void;
 }
 
-export class RegisterPresenter {
-  private view: RegisterView;
+export class RegisterPresenter extends Presenter<RegisterView> {
   private userService = new UserService();
 
   private navigate: NavigateFunction;
@@ -40,7 +39,7 @@ export class RegisterPresenter {
       rememberMe: boolean
     ) => void
   ) {
-    this.view = view;
+    super(view);
     this.navigate = navigate;
     this.updateUserInfo = updateUserInfo;
   }

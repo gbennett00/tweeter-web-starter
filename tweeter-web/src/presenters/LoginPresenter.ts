@@ -1,15 +1,14 @@
 import { NavigateFunction } from "react-router-dom";
 import { User, AuthToken } from "tweeter-shared";
 import { UserService } from "../model/service/UserService";
+import { Presenter, View } from "./Presenter";
 
-export interface LoginView {
+export interface LoginView extends View {
   updateSubmitButtonStatus: (status: boolean) => void;
   setLoadingState: (isLoading: boolean) => void;
-  displayErrorMessage: (message: string) => void;
 }
 
-export class LoginPresenter {
-  private _view: LoginView;
+export class LoginPresenter extends Presenter<LoginView> {
   private userService = new UserService();
 
   private navigate: NavigateFunction;
@@ -36,7 +35,7 @@ export class LoginPresenter {
     ) => void,
     originalUrl?: string
   ) {
-    this._view = view;
+    super(view);
     this.navigate = navigate;
     this.updateUserInfo = updateUserInfo;
     this.originalUrl = originalUrl;
@@ -50,7 +49,7 @@ export class LoginPresenter {
 
   async doLogin() {
     try {
-      this._view.setLoadingState(true);
+      this.view.setLoadingState(true);
 
       const [user, authToken] = await this.userService.login(this._alias, this._password);
 
@@ -62,11 +61,11 @@ export class LoginPresenter {
         this.navigate("/");
       }
     } catch (error) {
-      this._view.displayErrorMessage(
+      this.view.displayErrorMessage(
         `Failed to log user in because of exception: ${error}`
       );
     } finally {
-      this._view.setLoadingState(false);
+      this.view.setLoadingState(false);
     }
   }
 
@@ -76,12 +75,12 @@ export class LoginPresenter {
 
   set alias(value: string) {
     this._alias = value;
-    this._view.updateSubmitButtonStatus(this.getSubmitButtonStatus());
+    this.view.updateSubmitButtonStatus(this.getSubmitButtonStatus());
   }
 
   set password(value: string) {
     this._password = value;
-    this._view.updateSubmitButtonStatus(this.getSubmitButtonStatus());
+    this.view.updateSubmitButtonStatus(this.getSubmitButtonStatus());
   }
 
   set rememberMe(value: boolean) {
