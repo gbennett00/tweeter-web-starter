@@ -6,7 +6,10 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
 import useUserInfo from "../../userInfo/UserInfoHook";
-import { RegisterPresenter, RegisterView } from "../../../presenters/RegisterPresenter";
+import {
+  RegisterPresenter,
+  RegisterView,
+} from "../../../presenters/authentication/RegisterPresenter";
 
 const Register = () => {
   const [submitButtonStatus, setSubmitButtonStatus] = useState(true);
@@ -21,7 +24,7 @@ const Register = () => {
       setSubmitButtonStatus(status),
     setLoadingState: (isLoading: boolean) => setIsLoading(isLoading),
     displayErrorMessage: displayErrorMessage,
-  }
+  };
 
   const [presenter] = useState(
     () => new RegisterPresenter(listener, navigate, updateUserInfo)
@@ -38,7 +41,7 @@ const Register = () => {
             id="firstNameInput"
             placeholder="First Name"
             onKeyDown={(event) => presenter.registerOnEnter(event)}
-            onChange={(event) => presenter.firstName = event.target.value}
+            onChange={(event) => (presenter.firstName = event.target.value)}
           />
           <label htmlFor="firstNameInput">First Name</label>
         </div>
@@ -50,14 +53,15 @@ const Register = () => {
             id="lastNameInput"
             placeholder="Last Name"
             onKeyDown={(event) => presenter.registerOnEnter(event)}
-            onChange={(event) => presenter.lastName = event.target.value}
+            onChange={(event) => (presenter.lastName = event.target.value)}
           />
           <label htmlFor="lastNameInput">Last Name</label>
         </div>
-        <AuthenticationFields 
-            authenticateOnEnter={(event) => presenter.registerOnEnter(event)} 
-            setAlias={(event) => (presenter.alias = event.toString())} 
-            setPassword={(event) => (presenter.password = event.toString())} />
+        <AuthenticationFields
+          authenticateOnEnter={(event) => presenter.registerOnEnter(event)}
+          setAlias={(event) => (presenter.alias = event.toString())}
+          setPassword={(event) => (presenter.password = event.toString())}
+        />
         <div className="form-floating mb-3">
           <input
             type="file"

@@ -1,8 +1,8 @@
 import { NavigateFunction } from "react-router-dom";
-import { UserService } from "../model/service/UserService";
+import { UserService } from "../../model/service/UserService";
 import { AuthToken, User } from "tweeter-shared";
 import { Buffer } from "buffer";
-import { Presenter, View } from "./Presenter";
+import { Presenter, View } from "../Presenter";
 
 export interface RegisterView extends View {
   updateSubmitButtonStatus: (status: boolean) => void;

@@ -1,7 +1,7 @@
 import { NavigateFunction } from "react-router-dom";
 import { User, AuthToken } from "tweeter-shared";
-import { UserService } from "../model/service/UserService";
-import { Presenter, View } from "./Presenter";
+import { UserService } from "../../model/service/UserService";
+import { Presenter, View } from "../Presenter";
 
 export interface LoginView extends View {
   updateSubmitButtonStatus: (status: boolean) => void;
@@ -48,23 +48,28 @@ export class LoginPresenter extends Presenter<LoginView> {
   }
 
   async doLogin() {
-    this.doFailureReportingOperation(async () => {
-      this.view.setLoadingState(true);
+    this.doFailureReportingOperation(
+      async () => {
+        this.view.setLoadingState(true);
 
-      const [user, authToken] = await this.userService.login(this._alias, this._password);
+        const [user, authToken] = await this.userService.login(
+          this._alias,
+          this._password
+        );
 
-      this.updateUserInfo(user, user, authToken, this._rememberMe);
+        this.updateUserInfo(user, user, authToken, this._rememberMe);
 
-      if (!!this.originalUrl) {
-        this.navigate(this.originalUrl);
-      } else {
-        this.navigate("/");
+        if (!!this.originalUrl) {
+          this.navigate(this.originalUrl);
+        } else {
+          this.navigate("/");
+        }
+      },
+      "log user in",
+      () => {
+        this.view.setLoadingState(false);
       }
-    },
-    "log user in",
-    () => {
-      this.view.setLoadingState(false);
-    });
+    );
   }
 
   private getSubmitButtonStatus(): boolean {

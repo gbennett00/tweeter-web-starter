@@ -6,7 +6,10 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
 import useUserInfo from "../../userInfo/UserInfoHook";
-import { LoginPresenter, LoginView } from "../../../presenters/LoginPresenter";
+import {
+  LoginPresenter,
+  LoginView,
+} from "../../../presenters/authentication/LoginPresenter";
 
 interface Props {
   originalUrl?: string;
@@ -19,7 +22,7 @@ const Login = (props: Props) => {
   const navigate = useNavigate();
   const { updateUserInfo } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
-  
+
   const view: LoginView = {
     updateSubmitButtonStatus: (status: boolean) =>
       setSubmitButtonStatus(status),
