@@ -56,27 +56,25 @@ export class RegisterPresenter extends Presenter<RegisterView> {
   }
 
   async doRegister() {
-    try {
-      this.view.setLoadingState(true);
+    this.doFailureReportingOperation(
+      async () => {
+        this.view.setLoadingState(true);
 
-      const [user, authToken] = await this.userService.register(
-        this._firstName,
-        this._lastName,
-        this._alias,
-        this._password,
-        this._imageBytes,
-        this._imageFileExtension
-      );
+        const [user, authToken] = await this.userService.register(
+          this._firstName,
+          this._lastName,
+          this._alias,
+          this._password,
+          this._imageBytes,
+          this._imageFileExtension
+        );
 
-      this.updateUserInfo(user, user, authToken, this._rememberMe);
-      this.navigate("/");
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to register user because of exception: ${error}`
-      );
-    } finally {
-      this.view.setLoadingState(false);
-    }
+        this.updateUserInfo(user, user, authToken, this._rememberMe);
+        this.navigate("/");
+      },
+      "register user",
+      () => this.view.setLoadingState(false)
+    );
   }
 
   handleImageFile(file: File | undefined) {
@@ -110,11 +108,11 @@ export class RegisterPresenter extends Presenter<RegisterView> {
       this._imageBytes = new Uint8Array();
     }
     this.updateSubmitButtonStatus();
-  };
+  }
 
   private getFileExtension(file: File): string | undefined {
     return file.name.split(".").pop();
-  };
+  }
 
   private getSubmitButtonStatus(): boolean {
     return (
@@ -128,9 +126,7 @@ export class RegisterPresenter extends Presenter<RegisterView> {
   }
 
   private updateSubmitButtonStatus() {
-    this.view.updateSubmitButtonStatus(
-      this.getSubmitButtonStatus()
-    );
+    this.view.updateSubmitButtonStatus(this.getSubmitButtonStatus());
   }
 
   set firstName(value: string) {

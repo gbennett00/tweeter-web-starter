@@ -48,7 +48,7 @@ export class LoginPresenter extends Presenter<LoginView> {
   }
 
   async doLogin() {
-    try {
+    this.doFailureReportingOperation(async () => {
       this.view.setLoadingState(true);
 
       const [user, authToken] = await this.userService.login(this._alias, this._password);
@@ -60,13 +60,11 @@ export class LoginPresenter extends Presenter<LoginView> {
       } else {
         this.navigate("/");
       }
-    } catch (error) {
-      this.view.displayErrorMessage(
-        `Failed to log user in because of exception: ${error}`
-      );
-    } finally {
+    },
+    "log user in",
+    () => {
       this.view.setLoadingState(false);
-    }
+    });
   }
 
   private getSubmitButtonStatus(): boolean {
