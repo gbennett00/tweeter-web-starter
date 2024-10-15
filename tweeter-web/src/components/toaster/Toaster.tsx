@@ -2,7 +2,10 @@ import "./Toaster.css";
 import { useEffect, useState } from "react";
 import { Toast } from "react-bootstrap";
 import useToaster from "./ToastHook";
-import { ToasterPresenter, ToasterView } from "../../presenters/ToasterPresenter";
+import {
+  ToasterPresenter,
+  ToasterView,
+} from "../../presenters/context/ToasterPresenter";
 
 interface Props {
   position: string;
@@ -26,8 +29,8 @@ const Toaster = ({ position }: Props) => {
 
   const listener: ToasterView = {
     deleteToast: deleteToast,
-  }
-  
+  };
+
   const [presenter] = useState(() => new ToasterPresenter(listener));
 
   return (

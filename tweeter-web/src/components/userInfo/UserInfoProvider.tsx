@@ -3,7 +3,7 @@ import { User, AuthToken } from "tweeter-shared";
 import {
   UserInfoProviderPresenter,
   UserInfoProviderView,
-} from "../../presenters/UserInfoProviderPresenter";
+} from "../../presenters/context/UserInfoProviderPresenter";
 
 interface UserInfo {
   currentUser: User | null;

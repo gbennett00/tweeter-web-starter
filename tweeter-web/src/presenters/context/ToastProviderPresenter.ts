@@ -5,7 +5,7 @@ import {
   makeWarningToast,
   Toast,
   Type,
-} from "../components/toaster/Toast";
+} from "../../components/toaster/Toast";
 
 export interface ToastProviderView {
   displayToast(toast: Toast): void;
@@ -57,23 +57,23 @@ export class ToastProviderPresenter {
     const toast = makeWarningToast(message, duration, bootstrapClasses);
     this.view.displayToast(toast);
     return toast.id;
-  };
+  }
 
   public deleteAllSuccessToasts(toastList: Toast[]) {
     this.deleteAllToastsOfType(Type.Success, toastList);
-  };
+  }
 
   public deleteAllErrorToasts(toastList: Toast[]) {
     this.deleteAllToastsOfType(Type.Error, toastList);
-  };
+  }
 
   public deleteAllInfoToasts(toastList: Toast[]) {
     this.deleteAllToastsOfType(Type.Info, toastList);
-  };
+  }
 
   public deleteAllWarningToasts(toastList: Toast[]) {
     this.deleteAllToastsOfType(Type.Warning, toastList);
-  };
+  }
 
   public deleteAllToastsOfType(type: Type, toastList: Toast[]) {
     for (let toast of toastList) {
@@ -81,29 +81,29 @@ export class ToastProviderPresenter {
         this.view.deleteToast(toast.id);
       }
     }
-  };
+  }
 
   public deleteLastToast(toastList: Toast[]) {
     if (!!toastList && toastList.length > 0) {
       this.view.deleteToast(toastList[toastList.length - 1].id);
     }
-  };
+  }
 
   public deleteLastSuccessToast(toasts: Toast[]) {
     this.deleteLastTypedToast(Type.Success, toasts);
-  };
+  }
 
   public deleteLastErrorToast(toasts: Toast[]) {
     this.deleteLastTypedToast(Type.Error, toasts);
-  };
+  }
 
-  public deleteLastInfoToast(toasts:Toast[]) {
+  public deleteLastInfoToast(toasts: Toast[]) {
     this.deleteLastTypedToast(Type.Info, toasts);
-  };
+  }
 
   public deleteLastWarningToast(toasts: Toast[]) {
     this.deleteLastTypedToast(Type.Warning, toasts);
-  };
+  }
 
   public deleteLastTypedToast(type: Type, toasts: Toast[]) {
     const toastList = toasts;
@@ -120,5 +120,5 @@ export class ToastProviderPresenter {
         index--;
       } while (index >= 0);
     }
-  };
+  }
 }

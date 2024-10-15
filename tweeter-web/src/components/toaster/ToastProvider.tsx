@@ -3,7 +3,7 @@ import { Toast } from "./Toast";
 import {
   ToastProviderPresenter,
   ToastProviderView,
-} from "../../presenters/ToastProviderPresenter";
+} from "../../presenters/context/ToastProviderPresenter";
 
 interface ToastInfo {
   toastList: Toast[];
