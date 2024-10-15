@@ -9,6 +9,10 @@ export interface UserNavigationView extends View {
 export class UserNavigationPresenter extends Presenter<UserNavigationView> {
   private userService = new UserService();
 
+  public constructor(view: UserNavigationView) {
+    super(view);
+  }
+
   public async navigateToUser(
     event: React.MouseEvent,
     authToken: AuthToken,

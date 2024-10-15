@@ -12,6 +12,10 @@ export interface UserInfoView extends LoadingView {
 export class UserInfoPresenter extends LoadingPresenter<UserInfoView> {
   private followService = new FollowService();
 
+  public constructor(view: UserInfoView) {
+    super(view);
+  }
+
   public switchToLoggedInUser(
     event: React.MouseEvent,
     currentUser: User
@@ -66,8 +70,10 @@ export class UserInfoPresenter extends LoadingPresenter<UserInfoView> {
       ? "Unfollowing"
       : "Following";
     const operation = isCurrentlyFollower
-      ? this.followService.unfollow
-      : this.followService.follow;
+      ? (authToken: AuthToken, userToUnfollow: User) =>
+          this.followService.unfollow(authToken, userToUnfollow)
+      : (authToken: AuthToken, userToFollow: User) =>
+          this.followService.follow(authToken, userToFollow);
     const operationDescription = isCurrentlyFollower
       ? "unfollow user"
       : "follow user";
