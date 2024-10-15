@@ -13,12 +13,12 @@ import Toaster from "./components/toaster/Toaster";
 import UserItemScroller from "./components/mainLayout/UserItemScroller";
 import StatusItemScroller from "./components/mainLayout/StatusItemScroller";
 import useUserInfo from "./components/userInfo/UserInfoHook";
-import { PagedItemView } from "./presenters/PagedItemPresenter";
+import { PagedItemView } from "./presenters/pagedItem/PagedItemPresenter";
 import { Status, User } from "tweeter-shared";
-import { FeedPresenter } from "./presenters/FeedPresenter";
-import { StoryPresenter } from "./presenters/StoryPresenter";
-import { FolloweePresenter } from "./presenters/FolloweePresenter";
-import { FollowerPresenter } from "./presenters/FollowerPresenter";
+import { FeedPresenter } from "./presenters/pagedItem/FeedPresenter";
+import { StoryPresenter } from "./presenters/pagedItem/StoryPresenter";
+import { FolloweePresenter } from "./presenters/pagedItem/FolloweePresenter";
+import { FollowerPresenter } from "./presenters/pagedItem/FollowerPresenter";
 
 const App = () => {
   const { currentUser, authToken } = useUserInfo();

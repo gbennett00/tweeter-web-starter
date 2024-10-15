@@ -7,7 +7,7 @@ import useUserInfo from "../userInfo/UserInfoHook";
 import {
   PagedItemPresenter,
   PagedItemView,
-} from "../../presenters/PagedItemPresenter";
+} from "../../presenters/pagedItem/PagedItemPresenter";
 
 interface Props {
   presenterGenerator: (view: PagedItemView<User>) => PagedItemPresenter<User>;

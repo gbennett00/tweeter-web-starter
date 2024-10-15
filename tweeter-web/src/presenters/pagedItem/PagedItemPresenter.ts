@@ -1,5 +1,5 @@
 import { User, Status, AuthToken } from "tweeter-shared";
-import { Presenter, View } from "./Presenter";
+import { Presenter, View } from "../Presenter";
 
 type Item = User | Status;
 
@@ -9,7 +9,9 @@ export interface PagedItemView<T extends Item> extends View {
 
 export const PAGE_SIZE = 10;
 
-export abstract class PagedItemPresenter<T extends Item> extends Presenter {
+export abstract class PagedItemPresenter<T extends Item> extends Presenter<
+  PagedItemView<T>
+> {
   private _hasMoreItems = true;
   private _lastItem: T | null = null;
   private _firstPageLoaded = false;
@@ -40,10 +42,6 @@ export abstract class PagedItemPresenter<T extends Item> extends Presenter {
 
   private set firstPageLoaded(value: boolean) {
     this._firstPageLoaded = value;
-  }
-
-  protected get view(): PagedItemView<T> {
-    return this.view as PagedItemView<T>;
   }
 
   public reset() {
