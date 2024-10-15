@@ -1,31 +1,15 @@
 import { NavigateFunction } from "react-router-dom";
 import { User, AuthToken } from "tweeter-shared";
-import { UserService } from "../../model/service/UserService";
-import { Presenter, View } from "../Presenter";
+import {
+  AuthenticationPresenter,
+  AuthenticationView,
+} from "./AuthenticationPresenter";
 
-export interface LoginView extends View {
-  updateSubmitButtonStatus: (status: boolean) => void;
-  setLoadingState: (isLoading: boolean) => void;
-}
-
-export class LoginPresenter extends Presenter<LoginView> {
-  private userService = new UserService();
-
-  private navigate: NavigateFunction;
-  private updateUserInfo: (
-    user: User,
-    displayedUser: User,
-    authToken: AuthToken,
-    rememberMe: boolean
-  ) => void;
+export class LoginPresenter extends AuthenticationPresenter {
   private originalUrl?: string;
 
-  private _alias: string = "";
-  private _password: string = "";
-  private _rememberMe: boolean = false;
-
   public constructor(
-    view: LoginView,
+    view: AuthenticationView,
     navigate: NavigateFunction,
     updateUserInfo: (
       user: User,
@@ -35,58 +19,30 @@ export class LoginPresenter extends Presenter<LoginView> {
     ) => void,
     originalUrl?: string
   ) {
-    super(view);
-    this.navigate = navigate;
-    this.updateUserInfo = updateUserInfo;
+    super(view, navigate, updateUserInfo);
     this.originalUrl = originalUrl;
   }
 
-  loginOnEnter(event: React.KeyboardEvent<HTMLElement>) {
-    if (event.key === "Enter" && !this.getSubmitButtonStatus()) {
-      this.doLogin();
+  protected getOperationDescription(): string {
+    return "log user in";
+  }
+
+  protected async authenticate(): Promise<void> {
+    const [user, authToken] = await this.userService.login(
+      this.alias,
+      this.password
+    );
+
+    this.updateUserInfo(user, user, authToken, this.rememberMe);
+
+    if (!!this.originalUrl) {
+      this.navigate(this.originalUrl);
+    } else {
+      this.navigate("/");
     }
   }
 
-  async doLogin() {
-    this.doFailureReportingOperation(
-      async () => {
-        this.view.setLoadingState(true);
-
-        const [user, authToken] = await this.userService.login(
-          this._alias,
-          this._password
-        );
-
-        this.updateUserInfo(user, user, authToken, this._rememberMe);
-
-        if (!!this.originalUrl) {
-          this.navigate(this.originalUrl);
-        } else {
-          this.navigate("/");
-        }
-      },
-      "log user in",
-      () => {
-        this.view.setLoadingState(false);
-      }
-    );
-  }
-
-  private getSubmitButtonStatus(): boolean {
-    return !this._alias || !this._password;
-  }
-
-  set alias(value: string) {
-    this._alias = value;
-    this.view.updateSubmitButtonStatus(this.getSubmitButtonStatus());
-  }
-
-  set password(value: string) {
-    this._password = value;
-    this.view.updateSubmitButtonStatus(this.getSubmitButtonStatus());
-  }
-
-  set rememberMe(value: boolean) {
-    this._rememberMe = value;
+  protected getSubmitButtonStatus(): boolean {
+    return !this.alias || !this.password;
   }
 }

@@ -6,10 +6,8 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
 import useUserInfo from "../../userInfo/UserInfoHook";
-import {
-  LoginPresenter,
-  LoginView,
-} from "../../../presenters/authentication/LoginPresenter";
+import { LoginPresenter } from "../../../presenters/authentication/LoginPresenter";
+import { AuthenticationView } from "../../../presenters/authentication/AuthenticationPresenter";
 
 interface Props {
   originalUrl?: string;
@@ -23,7 +21,7 @@ const Login = (props: Props) => {
   const { updateUserInfo } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
 
-  const view: LoginView = {
+  const view: AuthenticationView = {
     updateSubmitButtonStatus: (status: boolean) =>
       setSubmitButtonStatus(status),
     setLoadingState: (isLoading: boolean) => setIsLoading(isLoading),
@@ -38,7 +36,7 @@ const Login = (props: Props) => {
     return (
       <>
         <AuthenticationFields
-          authenticateOnEnter={(event) => presenter.loginOnEnter(event)}
+          authenticateOnEnter={(event) => presenter.authenticateOnEnter(event)}
           setAlias={(event) => (presenter.alias = event.toString())}
           setPassword={(event) => (presenter.password = event.toString())}
         />
@@ -64,7 +62,7 @@ const Login = (props: Props) => {
       setRememberMe={(value) => (presenter.rememberMe = value)}
       submitButtonDisabled={() => submitButtonStatus}
       isLoading={isLoading}
-      submit={() => presenter.doLogin()}
+      submit={() => presenter.doAuthentication()}
     />
   );
 };

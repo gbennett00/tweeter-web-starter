@@ -1,36 +1,20 @@
 import { NavigateFunction } from "react-router-dom";
-import { UserService } from "../../model/service/UserService";
 import { AuthToken, User } from "tweeter-shared";
 import { Buffer } from "buffer";
-import { Presenter, View } from "../Presenter";
+import {
+  AuthenticationPresenter,
+  AuthenticationView,
+} from "./AuthenticationPresenter";
 
-export interface RegisterView extends View {
-  updateSubmitButtonStatus: (status: boolean) => void;
-  setLoadingState: (isLoading: boolean) => void;
-}
-
-export class RegisterPresenter extends Presenter<RegisterView> {
-  private userService = new UserService();
-
-  private navigate: NavigateFunction;
-  private updateUserInfo: (
-    user: User,
-    displayedUser: User,
-    authToken: AuthToken,
-    rememberMe: boolean
-  ) => void;
-
+export class RegisterPresenter extends AuthenticationPresenter {
   private _firstName: string = "";
   private _lastName: string = "";
-  private _alias: string = "";
-  private _password: string = "";
   private _imageBytes: Uint8Array = new Uint8Array();
   private _imageUrl: string = "";
   private _imageFileExtension: string = "";
-  private _rememberMe: boolean = false;
 
-  constructor(
-    view: RegisterView,
+  public constructor(
+    view: AuthenticationView,
     navigate: NavigateFunction,
     updateUserInfo: (
       user: User,
@@ -39,45 +23,33 @@ export class RegisterPresenter extends Presenter<RegisterView> {
       rememberMe: boolean
     ) => void
   ) {
-    super(view);
-    this.navigate = navigate;
-    this.updateUserInfo = updateUserInfo;
+    super(view, navigate, updateUserInfo);
   }
 
-  registerOnEnter(event: React.KeyboardEvent<HTMLElement>) {
-    if (event.key === "Enter" && !this.getSubmitButtonStatus()) {
-      this.doRegister();
-    }
+  protected getOperationDescription(): string {
+    return "register user";
   }
 
-  handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
+  protected async authenticate(): Promise<void> {
+    const [user, authToken] = await this.userService.register(
+      this._firstName,
+      this._lastName,
+      this.alias,
+      this.password,
+      this._imageBytes,
+      this._imageFileExtension
+    );
+
+    this.updateUserInfo(user, user, authToken, this.rememberMe);
+    this.navigate("/");
+  }
+
+  public handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
     this.handleImageFile(file);
   }
 
-  async doRegister() {
-    this.doFailureReportingOperation(
-      async () => {
-        this.view.setLoadingState(true);
-
-        const [user, authToken] = await this.userService.register(
-          this._firstName,
-          this._lastName,
-          this._alias,
-          this._password,
-          this._imageBytes,
-          this._imageFileExtension
-        );
-
-        this.updateUserInfo(user, user, authToken, this._rememberMe);
-        this.navigate("/");
-      },
-      "register user",
-      () => this.view.setLoadingState(false)
-    );
-  }
-
-  handleImageFile(file: File | undefined) {
+  private handleImageFile(file: File | undefined) {
     if (file) {
       this._imageUrl = URL.createObjectURL(file);
 
@@ -114,46 +86,28 @@ export class RegisterPresenter extends Presenter<RegisterView> {
     return file.name.split(".").pop();
   }
 
-  private getSubmitButtonStatus(): boolean {
+  protected getSubmitButtonStatus(): boolean {
     return (
       !this._firstName ||
       !this._lastName ||
-      !this._alias ||
-      !this._password ||
+      !this.alias ||
+      !this.password ||
       !this._imageUrl ||
       !this._imageFileExtension
     );
   }
 
-  private updateSubmitButtonStatus() {
-    this.view.updateSubmitButtonStatus(this.getSubmitButtonStatus());
-  }
-
-  set firstName(value: string) {
+  public set firstName(value: string) {
     this._firstName = value;
     this.updateSubmitButtonStatus();
   }
 
-  set lastName(value: string) {
+  public set lastName(value: string) {
     this._lastName = value;
     this.updateSubmitButtonStatus();
   }
 
-  set alias(value: string) {
-    this._alias = value;
-    this.updateSubmitButtonStatus();
-  }
-
-  set password(value: string) {
-    this._password = value;
-    this.updateSubmitButtonStatus();
-  }
-
-  get imageUrl() {
+  public get imageUrl() {
     return this._imageUrl;
-  }
-
-  set rememberMe(value: boolean) {
-    this._rememberMe = value;
   }
 }

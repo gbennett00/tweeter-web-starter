@@ -4,7 +4,7 @@ export interface LoadingView extends MessageView {
   setIsLoading: (isLoading: boolean) => void;
 }
 
-export class LoadingPresenter<V extends LoadingView> extends Presenter<V> {
+export abstract class LoadingPresenter<V extends LoadingView> extends Presenter<V> {
   protected async doFailureReportingLoadingOperation(
     operation: () => Promise<void>,
     loadingMessage: string,

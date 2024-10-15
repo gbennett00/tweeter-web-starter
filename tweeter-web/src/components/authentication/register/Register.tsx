@@ -6,10 +6,8 @@ import AuthenticationFormLayout from "../AuthenticationFormLayout";
 import useToastListener from "../../toaster/ToastListenerHook";
 import AuthenticationFields from "../AuthenticationFields";
 import useUserInfo from "../../userInfo/UserInfoHook";
-import {
-  RegisterPresenter,
-  RegisterView,
-} from "../../../presenters/authentication/RegisterPresenter";
+import { RegisterPresenter } from "../../../presenters/authentication/RegisterPresenter";
+import { AuthenticationView } from "../../../presenters/authentication/AuthenticationPresenter";
 
 const Register = () => {
   const [submitButtonStatus, setSubmitButtonStatus] = useState(true);
@@ -19,7 +17,7 @@ const Register = () => {
   const { updateUserInfo } = useUserInfo();
   const { displayErrorMessage } = useToastListener();
 
-  const listener: RegisterView = {
+  const listener: AuthenticationView = {
     updateSubmitButtonStatus: (status: boolean) =>
       setSubmitButtonStatus(status),
     setLoadingState: (isLoading: boolean) => setIsLoading(isLoading),
@@ -40,7 +38,7 @@ const Register = () => {
             size={50}
             id="firstNameInput"
             placeholder="First Name"
-            onKeyDown={(event) => presenter.registerOnEnter(event)}
+            onKeyDown={(event) => presenter.authenticateOnEnter(event)}
             onChange={(event) => (presenter.firstName = event.target.value)}
           />
           <label htmlFor="firstNameInput">First Name</label>
@@ -52,13 +50,13 @@ const Register = () => {
             size={50}
             id="lastNameInput"
             placeholder="Last Name"
-            onKeyDown={(event) => presenter.registerOnEnter(event)}
+            onKeyDown={(event) => presenter.authenticateOnEnter(event)}
             onChange={(event) => (presenter.lastName = event.target.value)}
           />
           <label htmlFor="lastNameInput">Last Name</label>
         </div>
         <AuthenticationFields
-          authenticateOnEnter={(event) => presenter.registerOnEnter(event)}
+          authenticateOnEnter={(event) => presenter.authenticateOnEnter(event)}
           setAlias={(event) => (presenter.alias = event.toString())}
           setPassword={(event) => (presenter.password = event.toString())}
         />
@@ -67,7 +65,7 @@ const Register = () => {
             type="file"
             className="d-inline-block py-5 px-4 form-control bottom"
             id="imageFileInput"
-            onKeyDown={(event) => presenter.registerOnEnter(event)}
+            onKeyDown={(event) => presenter.authenticateOnEnter(event)}
             onChange={(event) => presenter.handleFileChange(event)}
           />
           <label htmlFor="imageFileInput">User Image</label>
@@ -95,7 +93,7 @@ const Register = () => {
       setRememberMe={(value) => (presenter.rememberMe = value)}
       submitButtonDisabled={() => submitButtonStatus}
       isLoading={isLoading}
-      submit={() => presenter.doRegister()}
+      submit={() => presenter.doAuthentication()}
     />
   );
 };
