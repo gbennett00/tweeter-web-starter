@@ -5,6 +5,7 @@ import {
   AuthenticationView,
   UpdateUserInfoFunction,
 } from "./AuthenticationPresenter";
+import { User, AuthToken } from "tweeter-shared";
 
 export class RegisterPresenter extends AuthenticationPresenter {
   private _firstName: string = "";
@@ -25,8 +26,8 @@ export class RegisterPresenter extends AuthenticationPresenter {
     return "register user";
   }
 
-  protected async authenticate(): Promise<void> {
-    const [user, authToken] = await this.userService.register(
+  protected async authenticate(): Promise<[User, AuthToken]> {
+    return await this.userService.register(
       this._firstName,
       this._lastName,
       this.alias,
@@ -34,8 +35,9 @@ export class RegisterPresenter extends AuthenticationPresenter {
       this._imageBytes,
       this._imageFileExtension
     );
+  }
 
-    this.updateUserInfo(user, user, authToken, this.rememberMe);
+  protected doNavigation() {
     this.navigate("/");
   }
 

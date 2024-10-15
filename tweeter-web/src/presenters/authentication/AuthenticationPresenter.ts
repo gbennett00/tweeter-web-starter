@@ -63,7 +63,11 @@ export abstract class AuthenticationPresenter extends Presenter<AuthenticationVi
       async () => {
         this.view.setLoadingState(true);
 
-        await this.authenticate();
+        const [user, authToken] = await this.authenticate();
+        
+        this.updateUserInfo(user, user, authToken, this.rememberMe);
+
+        this.doNavigation();
       },
       this.getOperationDescription(),
       () => this.view.setLoadingState(false)
@@ -72,7 +76,9 @@ export abstract class AuthenticationPresenter extends Presenter<AuthenticationVi
 
   protected abstract getOperationDescription(): string;
 
-  protected abstract authenticate(): Promise<void>;
+  protected abstract authenticate(): Promise<[User, AuthToken]>;
+
+  protected abstract doNavigation(): void;
 
   protected updateSubmitButtonStatus() {
     this.view.updateSubmitButtonStatus(this.getSubmitButtonStatus());

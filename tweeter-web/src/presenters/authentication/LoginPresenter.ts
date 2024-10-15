@@ -4,6 +4,7 @@ import {
   AuthenticationView,
   UpdateUserInfoFunction,
 } from "./AuthenticationPresenter";
+import { AuthToken, User } from "tweeter-shared";
 
 export class LoginPresenter extends AuthenticationPresenter {
   private originalUrl?: string;
@@ -22,14 +23,11 @@ export class LoginPresenter extends AuthenticationPresenter {
     return "log user in";
   }
 
-  protected async authenticate(): Promise<void> {
-    const [user, authToken] = await this.userService.login(
-      this.alias,
-      this.password
-    );
+  protected async authenticate(): Promise<[User, AuthToken]> {
+    return await this.userService.login(this.alias, this.password);
+  }
 
-    this.updateUserInfo(user, user, authToken, this.rememberMe);
-
+  protected doNavigation() {
     if (!!this.originalUrl) {
       this.navigate(this.originalUrl);
     } else {
