@@ -1,16 +1,15 @@
 import { AuthToken, User } from "tweeter-shared";
 import { FollowService } from "../model/service/FollowService";
-import { MessageView, Presenter } from "./Presenter";
+import { LoadingPresenter, LoadingView } from "./LoadingPresenter";
 
-export interface UserInfoView extends MessageView {
+export interface UserInfoView extends LoadingView {
   setIsFollower: (isFollower: boolean) => void;
   setFolloweeCount: (count: number) => void;
   setFollowerCount: (count: number) => void;
   setDisplayedUser: (user: User) => void;
-  setIsLoading: (isLoading: boolean) => void;
 }
 
-export class UserInfoPresenter extends Presenter<UserInfoView> {
+export class UserInfoPresenter extends LoadingPresenter<UserInfoView> {
   private followService = new FollowService();
 
   public switchToLoggedInUser(
@@ -63,16 +62,20 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
     displayedUser: User,
     isCurrentlyFollower: boolean
   ) {
-    const infoMessageDescription = isCurrentlyFollower ? "Unfollowing" : "Following";
-    const operation = isCurrentlyFollower ? this.followService.unfollow : this.followService.follow;
-    const operationDescription = isCurrentlyFollower ? "unfollow user" : "follow user";
+    const infoMessageDescription = isCurrentlyFollower
+      ? "Unfollowing"
+      : "Following";
+    const operation = isCurrentlyFollower
+      ? this.followService.unfollow
+      : this.followService.follow;
+    const operationDescription = isCurrentlyFollower
+      ? "unfollow user"
+      : "follow user";
 
     event.preventDefault();
-    this.doFailureReportingOperation(
-      async () => {
-        this.view.setIsLoading(true);
-        this.view.displayInfoMessage(`${infoMessageDescription} ${displayedUser!.name}...`, 0);
 
+    this.doFailureReportingLoadingOperation(
+      async () => {
         const [followerCount, followeeCount] = await operation(
           authToken!,
           displayedUser!
@@ -82,11 +85,8 @@ export class UserInfoPresenter extends Presenter<UserInfoView> {
         this.view.setFollowerCount(followerCount);
         this.view.setFolloweeCount(followeeCount);
       },
-      operationDescription,
-      () => {
-        this.view.clearLastInfoMessage();
-        this.view.setIsLoading(false);
-      }
+      `${infoMessageDescription} ${displayedUser!.name}...`,
+      operationDescription
     );
   }
 
