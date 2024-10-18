@@ -10,7 +10,7 @@ export abstract class LoadingPresenter<V extends LoadingView> extends Presenter<
     loadingMessage: string,
     operationDescription: string
   ): Promise<void> {
-    this.doFailureReportingOperation(
+    await this.doFailureReportingOperation(
       async () => {
         this.view.setIsLoading(true);
         this.view.displayInfoMessage(loadingMessage, 0);

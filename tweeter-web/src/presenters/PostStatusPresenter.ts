@@ -7,16 +7,20 @@ export interface PostStatusView extends LoadingView {
 }
 
 export class PostStatusPresenter extends LoadingPresenter<PostStatusView>{
-  private statusService = new StatusService();
+  private _statusService = new StatusService();
 
   public constructor(view: PostStatusView) {
       super(view);
   }
 
+  public get statusService(): StatusService {
+    return this._statusService;
+  }
+
   public async submitPost(event: React.MouseEvent, post: string, authToken: AuthToken, currentUser: User) {
     event.preventDefault();
 
-    this.doFailureReportingLoadingOperation(
+    await this.doFailureReportingLoadingOperation(
       async () => {
         const status = new Status(post, currentUser!, Date.now());
   
