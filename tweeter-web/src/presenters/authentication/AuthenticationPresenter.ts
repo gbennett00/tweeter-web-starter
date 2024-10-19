@@ -90,7 +90,7 @@ export abstract class AuthenticationPresenter extends Presenter<AuthenticationVi
     return this._alias;
   }
 
-  public set alias(value: string) {
+  public setAlias(value: string) {
     this._alias = value;
     this.updateSubmitButtonStatus();
   }
@@ -99,7 +99,7 @@ export abstract class AuthenticationPresenter extends Presenter<AuthenticationVi
     return this._password;
   }
 
-  public set password(value: string) {
+  public setPassword(value: string) {
     this._password = value;
     this.updateSubmitButtonStatus();
   }

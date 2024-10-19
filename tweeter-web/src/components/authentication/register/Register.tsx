@@ -57,8 +57,8 @@ const Register = () => {
         </div>
         <AuthenticationFields
           authenticateOnEnter={(event) => presenter.authenticateOnEnter(event)}
-          setAlias={(event) => (presenter.alias = event.toString())}
-          setPassword={(event) => (presenter.password = event.toString())}
+          setAlias={(event) => (presenter.setAlias(event.toString()))}
+          setPassword={(event) => (presenter.setPassword(event.toString()))}
         />
         <div className="form-floating mb-3">
           <input

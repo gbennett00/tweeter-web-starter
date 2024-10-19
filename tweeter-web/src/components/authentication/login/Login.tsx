@@ -11,10 +11,11 @@ import { AuthenticationView } from "../../../presenters/authentication/Authentic
 
 interface Props {
   originalUrl?: string;
+  presenter?: LoginPresenter;
 }
 
 const Login = (props: Props) => {
-  const [submitButtonStatus, setSubmitButtonStatus] = useState(true);
+  const [submitButtonStatus, setSubmitButtonStatus] = useState(!!props.presenter ? false : true);
   const [isLoading, setIsLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -29,7 +30,7 @@ const Login = (props: Props) => {
   };
 
   const [presenter] = useState(
-    () => new LoginPresenter(view, navigate, updateUserInfo, props.originalUrl)
+    props.presenter ?? new LoginPresenter(view, navigate, updateUserInfo, props.originalUrl)
   );
 
   const inputFieldGenerator = () => {
@@ -37,8 +38,8 @@ const Login = (props: Props) => {
       <>
         <AuthenticationFields
           authenticateOnEnter={(event) => presenter.authenticateOnEnter(event)}
-          setAlias={(event) => (presenter.alias = event.toString())}
-          setPassword={(event) => (presenter.password = event.toString())}
+          setAlias={(event) => (presenter.setAlias(event.toString()))}
+          setPassword={(event) => (presenter.setPassword(event.toString()))}
         />
       </>
     );
