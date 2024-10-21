@@ -7,7 +7,11 @@ import {
   PostStatusView,
 } from "../../presenters/PostStatusPresenter";
 
-const PostStatus = () => {
+interface Props {
+  presenter?: PostStatusPresenter;
+}
+
+const PostStatus = (props: Props) => {
   const { displayErrorMessage, displayInfoMessage, clearLastInfoMessage } =
     useToastListener();
 
@@ -23,7 +27,7 @@ const PostStatus = () => {
     setPost: setPost,
   };
 
-  const [presenter] = useState(() => new PostStatusPresenter(listener));
+  const [presenter] = useState(props.presenter ?? new PostStatusPresenter(listener));
 
   const checkButtonStatus: () => boolean = () => {
     return !post.trim() || !authToken || !currentUser;
@@ -36,6 +40,7 @@ const PostStatus = () => {
           <textarea
             className="form-control"
             id="postStatusTextArea"
+            aria-label="post-status-text"
             rows={10}
             placeholder="What's on your mind?"
             value={post}

@@ -7,7 +7,7 @@ import "@testing-library/jest-dom";
 import { library } from "@fortawesome/fontawesome-svg-core";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { LoginPresenter } from "../../../../src/presenters/authentication/LoginPresenter";
-import { capture, instance, mock, verify, when } from "ts-mockito";
+import { capture, instance, mock, verify } from "ts-mockito";
 
 library.add(fab);
 
