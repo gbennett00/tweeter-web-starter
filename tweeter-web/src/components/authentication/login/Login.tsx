@@ -27,10 +27,12 @@ const Login = (props: Props) => {
       setSubmitButtonStatus(status),
     setLoadingState: (isLoading: boolean) => setIsLoading(isLoading),
     displayErrorMessage: displayErrorMessage,
+    navigate: navigate,
+    updateUserInfo: updateUserInfo,
   };
 
   const [presenter] = useState(
-    props.presenter ?? new LoginPresenter(view, navigate, updateUserInfo, props.originalUrl)
+    props.presenter ?? new LoginPresenter(view, props.originalUrl)
   );
 
   const inputFieldGenerator = () => {

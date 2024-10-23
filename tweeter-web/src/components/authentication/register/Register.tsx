@@ -22,11 +22,11 @@ const Register = () => {
       setSubmitButtonStatus(status),
     setLoadingState: (isLoading: boolean) => setIsLoading(isLoading),
     displayErrorMessage: displayErrorMessage,
+    navigate: navigate,
+    updateUserInfo: updateUserInfo,
   };
 
-  const [presenter] = useState(
-    () => new RegisterPresenter(listener, navigate, updateUserInfo)
-  );
+  const [presenter] = useState(() => new RegisterPresenter(listener));
 
   const inputFieldGenerator = () => {
     return (

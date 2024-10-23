@@ -1,9 +1,7 @@
-import { NavigateFunction } from "react-router-dom";
 import { Buffer } from "buffer";
 import {
   AuthenticationPresenter,
   AuthenticationView,
-  UpdateUserInfoFunction,
 } from "./AuthenticationPresenter";
 import { User, AuthToken } from "tweeter-shared";
 
@@ -14,12 +12,8 @@ export class RegisterPresenter extends AuthenticationPresenter {
   private _imageUrl: string = "";
   private _imageFileExtension: string = "";
 
-  public constructor(
-    view: AuthenticationView,
-    navigate: NavigateFunction,
-    updateUserInfo: UpdateUserInfoFunction
-  ) {
-    super(view, navigate, updateUserInfo);
+  public constructor(view: AuthenticationView) {
+    super(view);
   }
 
   protected getOperationDescription(): string {
@@ -38,7 +32,7 @@ export class RegisterPresenter extends AuthenticationPresenter {
   }
 
   protected doNavigation() {
-    this.navigate("/");
+    this.view.navigate("/");
   }
 
   public handleFileChange(event: React.ChangeEvent<HTMLInputElement>) {

@@ -6,6 +6,8 @@ import { UserService } from "../../model/service/UserService";
 export interface AuthenticationView extends View {
   updateSubmitButtonStatus: (status: boolean) => void;
   setLoadingState: (isLoading: boolean) => void;
+  navigate: NavigateFunction;
+  updateUserInfo: UpdateUserInfoFunction;
 }
 
 export type UpdateUserInfoFunction = (
@@ -17,39 +19,17 @@ export type UpdateUserInfoFunction = (
 
 export abstract class AuthenticationPresenter extends Presenter<AuthenticationView> {
   private _userService = new UserService();
-
-  private _navigate: NavigateFunction;
-  private _updateUserInfo: UpdateUserInfoFunction;
   
   private _alias: string = "";
   private _password: string = "";
   private _rememberMe: boolean = false;
 
-  protected constructor(
-    view: AuthenticationView,
-    navigate: NavigateFunction,
-    updateUserInfo: UpdateUserInfoFunction
-  ) {
+  protected constructor(view: AuthenticationView) {
     super(view);
-    this._navigate = navigate;
-    this._updateUserInfo = updateUserInfo;
   }
 
   protected get userService(): UserService {
     return this._userService;
-  }
-
-  protected get navigate(): NavigateFunction {
-    return this._navigate;
-  }
-
-  protected get updateUserInfo(): (
-    user: User,
-    displayedUser: User,
-    authToken: AuthToken,
-    rememberMe: boolean
-  ) => void {
-    return this._updateUserInfo;
   }
 
   public authenticateOnEnter(event: React.KeyboardEvent<HTMLElement>) {
@@ -65,7 +45,7 @@ export abstract class AuthenticationPresenter extends Presenter<AuthenticationVi
 
         const [user, authToken] = await this.authenticate();
         
-        this.updateUserInfo(user, user, authToken, this.rememberMe);
+        this.view.updateUserInfo(user, user, authToken, this.rememberMe);
 
         this.doNavigation();
       },

@@ -11,11 +11,9 @@ export class LoginPresenter extends AuthenticationPresenter {
 
   public constructor(
     view: AuthenticationView,
-    navigate: NavigateFunction,
-    updateUserInfo: UpdateUserInfoFunction,
     originalUrl?: string
   ) {
-    super(view, navigate, updateUserInfo);
+    super(view);
     this.originalUrl = originalUrl;
   }
 
@@ -29,9 +27,9 @@ export class LoginPresenter extends AuthenticationPresenter {
 
   protected doNavigation() {
     if (!!this.originalUrl) {
-      this.navigate(this.originalUrl);
+      this.view.navigate(this.originalUrl);
     } else {
-      this.navigate("/");
+      this.view.navigate("/");
     }
   }
 
