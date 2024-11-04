@@ -1,8 +1,6 @@
-import { NavigateFunction } from "react-router-dom";
 import {
   AuthenticationPresenter,
   AuthenticationView,
-  UpdateUserInfoFunction,
 } from "./AuthenticationPresenter";
 import { AuthToken, User } from "tweeter-shared";
 
