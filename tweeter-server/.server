@@ -2,5 +2,6 @@ BUCKET='gbennett-aws-bucket'
 LAMBDA_ROLE='arn:aws:iam::726583194440:role/lambda-upload-script'
 EDIT_LAMBDALIST='
 tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
+tweeterGetFollowers | lambda/follow/GetFollowersLambda.handler
 '
 LAMBDALAYER_ARN='arn:aws:lambda:us-west-2:726583194440:layer:340ServerLayer:3'

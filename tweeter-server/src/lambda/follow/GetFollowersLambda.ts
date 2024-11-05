@@ -4,5 +4,5 @@ import { FollowService } from '../../model/service/FollowService';
 
 export const handler = async (request: PagedUserItemRequest): Promise<PagedUserItemResponse> => {
   const followService = new FollowService();
-  return getUsersHandler(request, () => followService.loadMoreFollowees(request.token, request.userAlias, request.pageSize, request.lastItem));
+  return getUsersHandler(request, () => followService.loadMoreFollowers(request.token, request.userAlias, request.pageSize, request.lastItem));
 }
