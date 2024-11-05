@@ -1,7 +1,6 @@
 BUCKET='gbennett-aws-bucket'
 LAMBDA_ROLE='arn:aws:iam::726583194440:role/lambda-upload-script'
 EDIT_LAMBDALIST='
-TODO: Enter a newline separated list of lambda names and corresponding lambda function names as follows:
 tweeterGetFollowees | lambda/follow/GetFolloweesLambda.handler
 '
-LAMBDALAYER_ARN='arn:aws:lambda:us-west-2:726583194440:layer:340ServerLayer:1'
+LAMBDALAYER_ARN='arn:aws:lambda:us-west-2:726583194440:layer:340ServerLayer:3'
