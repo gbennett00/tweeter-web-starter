@@ -13,10 +13,24 @@ export class ServerFacade {
   public async getMoreFollowees(
     request: PagedUserItemRequest
   ): Promise<[User[], boolean]> {
+    return this.sendPagedItemRequest(request, "/followee/list", `No followees found`);
+  }
+
+  public async getMoreFollowers(
+    request: PagedUserItemRequest
+  ): Promise<[User[], boolean]> {
+    return this.sendPagedItemRequest(request, "/follower/list", `No followers found`);
+  }
+
+  private async sendPagedItemRequest(
+    request: PagedUserItemRequest,
+    path: string,
+    errorMessage: string
+  ): Promise<[User[], boolean]> {
     const response = await this.clientCommunicator.doPost<
       PagedUserItemRequest,
       PagedUserItemResponse
-    >(request, "/followee/list");
+    >(request, path);
 
     // Convert the UserDto array returned by ClientCommunicator to a User array
     const items: User[] | null =
@@ -27,7 +41,7 @@ export class ServerFacade {
     // Handle errors    
     if (response.success) {
       if (items == null) {
-        throw new Error(`No followees found`);
+        throw new Error(errorMessage);
       } else {
         return [items, response.hasMore];
       }

@@ -10,9 +10,8 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    // TODO: Replace with the result of calling server
-    console.log("Loading more followers");
-    return FakeData.instance.getPageOfUsers(lastItem, pageSize, userAlias);
+    const req = this.toPagedUserItemRequest(authToken, userAlias, pageSize, lastItem);
+    return this.facade.getMoreFollowers(req);
   };
 
   public async loadMoreFollowees(
@@ -21,15 +20,22 @@ export class FollowService {
     pageSize: number,
     lastItem: User | null
   ): Promise<[User[], boolean]> {
-    
-    const req: PagedUserItemRequest = {
+    const req = this.toPagedUserItemRequest(authToken, userAlias, pageSize, lastItem);
+    return this.facade.getMoreFollowees(req);
+  };
+
+  private toPagedUserItemRequest(
+    authToken: AuthToken,
+    userAlias: string,
+    pageSize: number,
+    lastItem: User | null
+  ): PagedUserItemRequest {
+    return {
       token: authToken.token,
       userAlias: userAlias,
       pageSize: pageSize,
       lastItem: lastItem ? lastItem.dto : null
     };
-
-    return this.facade.getMoreFollowees(req);
   };
 
   async getIsFollowerStatus(
