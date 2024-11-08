@@ -1,6 +1,8 @@
 import {
-  GetIsFollowerRequest,
-  GetIsFollowerResponse,
+  FollowCountRequest,
+  FollowCountResponse,
+  IsFollowerRequest,
+  IsFollowerResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
   User,
@@ -54,10 +56,29 @@ export class ServerFacade {
     }
   }
 
-  public async getIsFollower(req: GetIsFollowerRequest): Promise<boolean> {
-    const response = await this.clientCommunicator.doPost<GetIsFollowerRequest, GetIsFollowerResponse>(req, "/follower/status");
+  public async getIsFollower(req: IsFollowerRequest): Promise<boolean> {
+    const response = await this.clientCommunicator.doPost<IsFollowerRequest, IsFollowerResponse>(req, "/follower/status");
     if (response.success) {
       return response.isFollower;
+    } else {
+      console.error(response);
+      const message = response.message ? response.message : undefined;
+      throw new Error(message);
+    }
+  }
+
+  public async getFolloweeCount(req: FollowCountRequest): Promise<number> {
+    return this.getFollowCount(req, "/followee/count");
+  }
+
+  public async getFollowerCount(req: FollowCountRequest): Promise<number> {
+    return this.getFollowCount(req, "/follower/count");
+  }
+
+  private async getFollowCount(req: FollowCountRequest, path: string): Promise<number> {
+    const response = await this.clientCommunicator.doPost<FollowCountRequest, FollowCountResponse>(req, path);
+    if (response.success) {
+      return response.count;
     } else {
       console.error(response);
       const message = response.message ? response.message : undefined;
