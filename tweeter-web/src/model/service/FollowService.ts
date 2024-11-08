@@ -1,4 +1,4 @@
-import { AuthToken, User, FakeData, PagedUserItemRequest } from "tweeter-shared";
+import { AuthToken, User, PagedUserItemRequest, FollowRequest, FollowCountRequest } from "tweeter-shared";
 import { ServerFacade } from "../../net/ServerFacade";
 
 export class FollowService {
@@ -54,39 +54,45 @@ export class FollowService {
     authToken: AuthToken,
     user: User
   ): Promise<number> {
-    return this.facade.getFolloweeCount({
-      token: authToken.token,
-      user: user.dto
-    });
+    const req = this.toFollowCountRequest(authToken, user);
+    return this.facade.getFolloweeCount(req);
   };
 
   async getFollowerCount(
     authToken: AuthToken,
     user: User
   ): Promise<number> {
-    return this.facade.getFollowerCount({
-      token: authToken.token,
-      user: user.dto
-    });
+    const req = this.toFollowCountRequest(authToken, user);
+    return this.facade.getFollowerCount(req);
   };
+
+  private toFollowCountRequest(token: AuthToken, user: User): FollowCountRequest {
+    return {
+      token: token.token,
+      user: user.dto
+    };
+  }
 
   async follow(
     authToken: AuthToken,
     userToFollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    return this.facade.follow({
-      token: authToken.token,
-      targetUser: userToFollow.dto
-    });
+    const req = this.toFollowRequest(authToken, userToFollow);
+    return this.facade.follow(req);
   };
 
   async unfollow(
     authToken: AuthToken,
     userToUnfollow: User
   ): Promise<[followerCount: number, followeeCount: number]> {
-    return this.facade.unfollow({
-      token: authToken.token,
-      targetUser: userToUnfollow.dto
-    });
+    const req = this.toFollowRequest(authToken, userToUnfollow);
+    return this.facade.unfollow(req);
   };
+
+  private toFollowRequest(token: AuthToken, targetUser: User): FollowRequest {
+    return {
+      token: token.token,
+      targetUser: targetUser.dto
+    };
+  }
 }
