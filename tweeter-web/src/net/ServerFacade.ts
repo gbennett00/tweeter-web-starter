@@ -1,6 +1,8 @@
 import {
   FollowCountRequest,
   FollowCountResponse,
+  FollowRequest,
+  FollowResponse,
   IsFollowerRequest,
   IsFollowerResponse,
   PagedUserItemRequest,
@@ -79,6 +81,28 @@ export class ServerFacade {
     const response = await this.clientCommunicator.doPost<FollowCountRequest, FollowCountResponse>(req, path);
     if (response.success) {
       return response.count;
+    } else {
+      console.error(response);
+      const message = response.message ? response.message : undefined;
+      throw new Error(message);
+    }
+  }
+
+  public async follow(req: FollowRequest): Promise<[number, number]> {
+    const response = await this.clientCommunicator.doPost<FollowRequest, FollowResponse>(req, "/follow");
+    if (response.success) {
+      return [response.followerCount, response.followeeCount];
+    } else {
+      console.error(response);
+      const message = response.message ? response.message : undefined;
+      throw new Error(message);
+    }
+  }
+
+  public async unfollow(req: FollowRequest): Promise<[number, number]> {
+    const response = await this.clientCommunicator.doPost<FollowRequest, FollowResponse>(req, "/unfollow");
+    if (response.success) {
+      return [response.followerCount, response.followeeCount];
     } else {
       console.error(response);
       const message = response.message ? response.message : undefined;
