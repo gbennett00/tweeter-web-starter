@@ -1,8 +1,7 @@
 import { AuthToken, User, PagedUserItemRequest, FollowRequest, FollowCountRequest } from "tweeter-shared";
-import { ServerFacade } from "../../net/ServerFacade";
+import { TweeterClient } from "./TweeterClient";
 
-export class FollowService {
-  private facade: ServerFacade = new ServerFacade();
+export class FollowService extends TweeterClient {
 
   public async loadMoreFollowers(
     authToken: AuthToken,

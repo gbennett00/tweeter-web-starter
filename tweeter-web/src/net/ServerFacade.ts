@@ -74,6 +74,10 @@ export class ServerFacade {
     return [res.followerCount, res.followeeCount];
   }
 
+  public async postStatus(req: TweeterRequest): Promise<void> {
+    await this.postAndHandleError<TweeterRequest, TweeterResponse>(req, "/status/post");
+  }
+
   private async postAndHandleError<REQ extends TweeterRequest, RES extends TweeterResponse>(
     req: REQ,
     path: string

@@ -1,9 +1,6 @@
-import { AuthToken, Status, FakeData } from "tweeter-shared";
-import { TweeterClient } from "./TweeterClient";
-import { tokenToString } from "typescript";
+import { AuthToken, Status, FakeData, StatusDto } from "tweeter-shared";
 
-export class StatusService extends TweeterClient {
-
+export class StatusService {
   public async loadMoreFeedItems(
     authToken: AuthToken,
     userAlias: string,
@@ -27,12 +24,11 @@ export class StatusService extends TweeterClient {
   };
 
   public async postStatus(
-    authToken: AuthToken,
-    newStatus: Status
+    token: string,
+    newStatus: StatusDto
   ): Promise<void> {
-    return this.facade.postStatus({
-      token: authToken.token,
-      status: newStatus.dto
-    });
+    // Pause so we can see the logging out message. Remove when connected to the server
+    await new Promise((f) => setTimeout(f, 2000));
+    // TODO: Call the server to post the status
   }
 }
