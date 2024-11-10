@@ -1,8 +1,10 @@
-import { PagedUserItemRequest, PagedUserItemResponse } from 'tweeter-shared';
-import { getUsersHandler } from './GetUsersLambda';
-import { FollowService } from '../../model/service/FollowService';
+import { PagedUserItemRequest, PagedUserItemResponse, UserDto } from "tweeter-shared";
+import { FollowService } from "../../model/service/FollowService";
+import { pagedItemHandler } from "../PagedItemHandler";
 
-export const handler = async (request: PagedUserItemRequest): Promise<PagedUserItemResponse> => {
+export const handler = async (request: PagedUserItemRequest<UserDto>): Promise<PagedUserItemResponse<UserDto>> => {
   const followService = new FollowService();
-  return getUsersHandler(request, () => followService.loadMoreFollowees(request.token, request.userAlias, request.pageSize, request.lastItem));
-}
+  return pagedItemHandler(request, () =>
+    followService.loadMoreFollowees(request.token, request.userAlias, request.pageSize, request.lastItem)
+  );
+};

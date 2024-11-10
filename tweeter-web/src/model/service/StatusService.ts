@@ -1,6 +1,5 @@
-import { AuthToken, Status, FakeData } from "tweeter-shared";
+import { AuthToken, Status, PagedUserItemRequest, StatusDto } from "tweeter-shared";
 import { TweeterClient } from "./TweeterClient";
-import { tokenToString } from "typescript";
 
 export class StatusService extends TweeterClient {
 
@@ -10,9 +9,8 @@ export class StatusService extends TweeterClient {
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
-    // TODO: Replace with the result of calling server
-    console.log("Loading more feed items");
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    const req = this.toPagedUserItemRequest(authToken, userAlias, pageSize, lastItem);
+    return this.facade.getMoreFeedItems(req as PagedUserItemRequest<StatusDto>);
   };
 
   public async loadMoreStoryItems(
@@ -21,9 +19,8 @@ export class StatusService extends TweeterClient {
     pageSize: number,
     lastItem: Status | null
   ): Promise<[Status[], boolean]> {
-    // TODO: Replace with the result of calling server
-    console.log("Loading more story items");
-    return FakeData.instance.getPageOfStatuses(lastItem, pageSize);
+    const req = this.toPagedUserItemRequest(authToken, userAlias, pageSize, lastItem);
+    return this.facade.getMoreStoryItems(req as PagedUserItemRequest<StatusDto>);
   };
 
   public async postStatus(

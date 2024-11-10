@@ -7,9 +7,12 @@ import {
   IsFollowerResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  Status,
+  StatusDto,
   TweeterRequest,
   TweeterResponse,
   User,
+  UserDto,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
 
@@ -18,23 +21,32 @@ export class ServerFacade {
 
   private clientCommunicator = new ClientCommunicator(this.SERVER_URL);
 
-  public async getMoreFollowees(request: PagedUserItemRequest): Promise<[User[], boolean]> {
-    return this.sendPagedItemRequest(request, "/followee/list", `No followees found`);
+  public async getMoreFollowees(request: PagedUserItemRequest<UserDto>): Promise<[User[], boolean]> {
+    return this.sendPagedItemRequest(request, "/followee/list", `No followees found`, User.fromDto);
   }
 
-  public async getMoreFollowers(request: PagedUserItemRequest): Promise<[User[], boolean]> {
-    return this.sendPagedItemRequest(request, "/follower/list", `No followers found`);
+  public async getMoreFollowers(request: PagedUserItemRequest<UserDto>): Promise<[User[], boolean]> {
+    return this.sendPagedItemRequest(request, "/follower/list", `No followers found`, User.fromDto);
   }
 
-  private async sendPagedItemRequest(
-    request: PagedUserItemRequest,
+  public async getMoreStoryItems(request: PagedUserItemRequest<StatusDto>): Promise<[Status[], boolean]> {
+    return this.sendPagedItemRequest(request, "/status/story", `No story items found`, Status.fromDto);
+  }
+
+  public async getMoreFeedItems(request: PagedUserItemRequest<StatusDto>): Promise<[Status[], boolean]> {
+    return this.sendPagedItemRequest(request, "/status/feed", `No feed items found`, Status.fromDto);
+  }
+
+  private async sendPagedItemRequest<DTO extends UserDto | StatusDto, Item extends User | Status>(
+    request: PagedUserItemRequest<DTO>,
     path: string,
-    errorMessage: string
-  ): Promise<[User[], boolean]> {
-    const res = await this.postAndHandleError<PagedUserItemRequest, PagedUserItemResponse>(request, path);
+    errorMessage: string,
+    fromDto: (dto: DTO | null) => Item | null,
+  ): Promise<[Item[], boolean]> {
+    const res = await this.postAndHandleError<PagedUserItemRequest<DTO>, PagedUserItemResponse<DTO>>(request, path);
 
-    // Convert the UserDto array returned by ClientCommunicator to a User array
-    const items: User[] | null = res.success && res.items ? res.items.map((dto) => User.fromDto(dto) as User) : null;
+    // Convert the Dto array returned by ClientCommunicator to an Item array
+    const items: Item[] | null = res.success && res.items ? res.items.map((dto) => fromDto(dto) as Item) : null;
 
     if (items == null) {
       throw new Error(errorMessage);

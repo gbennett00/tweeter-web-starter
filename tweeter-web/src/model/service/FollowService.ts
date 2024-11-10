@@ -1,4 +1,4 @@
-import { AuthToken, User, PagedUserItemRequest, FollowRequest, FollowCountRequest } from "tweeter-shared";
+import { AuthToken, User, PagedUserItemRequest, FollowRequest, FollowCountRequest, UserDto } from "tweeter-shared";
 import { TweeterClient } from "./TweeterClient";
 
 export class FollowService extends TweeterClient {
@@ -10,7 +10,7 @@ export class FollowService extends TweeterClient {
     lastItem: User | null
   ): Promise<[User[], boolean]> {
     const req = this.toPagedUserItemRequest(authToken, userAlias, pageSize, lastItem);
-    return this.facade.getMoreFollowers(req);
+    return this.facade.getMoreFollowers(req as PagedUserItemRequest<UserDto>);
   };
 
   public async loadMoreFollowees(
@@ -20,21 +20,7 @@ export class FollowService extends TweeterClient {
     lastItem: User | null
   ): Promise<[User[], boolean]> {
     const req = this.toPagedUserItemRequest(authToken, userAlias, pageSize, lastItem);
-    return this.facade.getMoreFollowees(req);
-  };
-
-  private toPagedUserItemRequest(
-    authToken: AuthToken,
-    userAlias: string,
-    pageSize: number,
-    lastItem: User | null
-  ): PagedUserItemRequest {
-    return {
-      token: authToken.token,
-      userAlias: userAlias,
-      pageSize: pageSize,
-      lastItem: lastItem ? lastItem.dto : null
-    };
+    return this.facade.getMoreFollowees(req as PagedUserItemRequest<UserDto>);
   };
 
   async getIsFollowerStatus(
