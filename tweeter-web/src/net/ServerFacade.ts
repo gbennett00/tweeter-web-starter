@@ -1,12 +1,17 @@
 import {
+  AuthRequest,
+  AuthResponse,
   FollowCountRequest,
   FollowCountResponse,
   FollowRequest,
   FollowResponse,
+  GetUserRequest,
+  GetUserResponse,
   IsFollowerRequest,
   IsFollowerResponse,
   PagedUserItemRequest,
   PagedUserItemResponse,
+  RegisterRequest,
   Status,
   StatusDto,
   TweeterRequest,
@@ -15,6 +20,7 @@ import {
   UserDto,
 } from "tweeter-shared";
 import { ClientCommunicator } from "./ClientCommunicator";
+import { VerifiedRequest } from "tweeter-shared/dist/model/net/request/VerifiedRequest";
 
 export class ServerFacade {
   private SERVER_URL = "https://f8sj6mgs36.execute-api.us-west-2.amazonaws.com/dev";
@@ -88,6 +94,23 @@ export class ServerFacade {
 
   public async postStatus(req: TweeterRequest): Promise<void> {
     await this.postAndHandleError<TweeterRequest, TweeterResponse>(req, "/status/post");
+  }
+
+  public async login(req: AuthRequest): Promise<AuthResponse> {
+    return await this.postAndHandleError<AuthRequest, AuthResponse>(req, "/user/login");
+  }
+
+  public async register(req: RegisterRequest): Promise<AuthResponse> {
+    return await this.postAndHandleError<AuthRequest, AuthResponse>(req, "/user/register");
+  }
+
+  public async logout(req: VerifiedRequest): Promise<void> {
+    await this.postAndHandleError<VerifiedRequest, TweeterResponse>(req, "/user/logout");
+  }
+
+  public async getUser(req: GetUserRequest): Promise<User | null> {
+    const res = await this.postAndHandleError<GetUserRequest, GetUserResponse>(req, "/user/get");
+    return User.fromDto(res.user);
   }
 
   private async postAndHandleError<REQ extends TweeterRequest, RES extends TweeterResponse>(
