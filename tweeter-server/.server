@@ -11,5 +11,9 @@ tweeterUnfollow | lambda/follow/UnfollowLambda.handler
 tweeterPostStatus | lambda/status/PostStatusLambda.handler
 tweeterGetStoryItems | lambda/status/GetStoryItemsLambda.handler
 tweeterGetFeedItems | lambda/status/GetFeedItemsLambda.handler
+tweeterLogin | lambda/user/LoginLambda.handler
+tweeterRegister | lambda/user/RegisterLambda.handler
+tweeterGetUser | lambda/user/GetUserLambda.handler
+tweeterLogout | lambda/user/LogoutLambda.handler
 '
-LAMBDALAYER_ARN='arn:aws:lambda:us-west-2:726583194440:layer:340ServerLayer:8'
+LAMBDALAYER_ARN='arn:aws:lambda:us-west-2:726583194440:layer:340ServerLayer:9'
